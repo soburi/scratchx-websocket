@@ -18,7 +18,7 @@ wss.on('connection', function(ws) {
                  "Eject-CDROM\n"]);
             child.on("close", function(error) {
                 console.log('exec eject: %s', error);
-                var data = {command: 'eject', error: error };
+                var data = {status: 'ejected', error: error };
                 ws.send(JSON.stringify(data));
             });
 	}
@@ -33,7 +33,7 @@ wss.on('connection', function(ws) {
 
             child.on("close", function(error) {
                 console.log('exec close: %s', error);
-                var data = {command: 'close', error: error };
+                var data = {status: 'closed', error: error };
                 ws.send(JSON.stringify(data));
             });
         }

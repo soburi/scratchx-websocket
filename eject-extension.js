@@ -56,8 +56,8 @@ new (function() {
 
         ext.api.addEventListener('message-received', function(event) {
             let recv = JSON.parse(event.data);
-            if(recv.command != undefined) {
-		curr_state = recv.command;
+            if(recv.status != undefined) {
+		curr_state = recv.status;
             }
         });
 
@@ -68,8 +68,8 @@ new (function() {
             }
             return false;
         };
-        ext.onDiskEjected = function() { return state_check('eject'); }
-        ext.onDriveClosed = function() { return state_check('close'); }
+        ext.onDiskEjected = function() { return state_check('ejected'); }
+        ext.onDriveClosed = function() { return state_check('closed'); }
 
         // Register the extension
         ScratchExtensions.register(name, descriptor, ext);
