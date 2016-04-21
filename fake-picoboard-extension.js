@@ -27,15 +27,15 @@ new (function() {
         blocks: [
             ['w', 'connect to %s', 'connect'],
             ['w', 'disconnect', 'disconnect'],
-            ['r', 'sensor %m.buttonStatus sensor value', 'getSensorBoolValue'],
-            ['r', '%m.sensorType sensor value', 'getSensorValue'],
-            ['h', 'when %m.buttonStatus', 'onButtonChanged'],
-            ['h', 'when %m.sensorType %m.lessMore %n', 'onSensorValueChanged'],
+            ['b', 'sensor %m.booleanSensor?', 'getSensorBoolValue'],
+            ['r', '%m.sensor sensor value', 'getSensorValue'],
+            ['h', 'when %m.booleanSensor', 'onButtonChanged'],
+            ['h', 'when %m.sensor %m.lessMore %n', 'onSensorValueChanged'],
         ],
         menus: {
             lessMore: ['<', '>'],
-            buttonStatus: ['button pressed', 'A connected', 'B connected', 'C connected', 'D connected'],
-            sensorType: ['slider', 'light', 'sound', 'resistance-A', 'resistance-B', 'resistance-C', 'resistance-D'],
+            booleanSensor: ['button pressed', 'A connected', 'B connected', 'C connected', 'D connected'],
+            sensor: ['slider', 'light', 'sound', 'resistance-A', 'resistance-B', 'resistance-C', 'resistance-D'],
         },
     };
 
