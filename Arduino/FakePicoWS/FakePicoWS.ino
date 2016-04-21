@@ -53,6 +53,7 @@ void setup() {
 
   pinMode(A0, INPUT);
   pinMode(0, INPUT_PULLUP);
+  pinMode(14, OUTPUT);
 
   A0_prev = analogRead(A0);
   IO0_prev = digitalRead(0);
@@ -111,8 +112,8 @@ void loop() {
       JsonObject& notify = notifyBuffer.createObject();
       JsonObject& notifyBody = notify.createNestedObject("notify");
 
-      if(A0_changed)  notifyBody["slider"] = (int) (A0_current / 10.24);
-      if(IO0_changed) notifyBody["button"] = (IO0_current ? 0 : 1);      
+      notifyBody["slider"] = (int) (A0_current / 10.24);
+      notifyBody["button"] = (IO0_current ? 0 : 1);
       
       notify.printTo(sendtext, sizeof(sendtext) );
 
@@ -190,11 +191,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * json, size_t length) {
         Serial.println(reqparam);
         response["response"] = reqparam;
 
-        if ( strequal("slider", reqparam) ) {
-          response["value"] = (int) (A0_current / 10.24);
-        }
-        else if (strequal("button pressed", reqparam)) {
-          response["value"] = (IO0_current ? 0 : 1);
+        if ( strequal("led", reqparam) ) {
+          int ledstat = root["param"];
+          digitalWrite(14, (ledstat == 0) ? 0 : 1);
+          response["value"] = (ledstat == 0) ? 0 : 1;
         }
         else {
           response["value"] = -1;
