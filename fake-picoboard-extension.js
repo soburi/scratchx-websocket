@@ -29,8 +29,8 @@ new (function() {
             ['w', 'disconnect', 'disconnect'],
             ['b', 'sensor %m.booleanSensor?', 'getSensorBoolValue'],
             ['r', '%m.sensor sensor value', 'getSensorValue'],
-            ['h', 'when %m.booleanSensor', 'onButtonChanged'],
-            ['h', 'when %m.sensor %m.lessMore %n', 'onSensorValueChanged'],
+            ['h', 'when %m.booleanSensor', 'isButtonPressed'],
+            ['h', 'when %m.sensor %m.lessMore %n', 'compareSensorValue'],
         ],
         menus: {
             lessMore: ['<', '>'],
@@ -65,78 +65,40 @@ new (function() {
         ext.api.addEventListener('message-received', function(event) {
             let recv = JSON.parse(event.data);
             if(recv.notify != undefined) {
-
                 for(k in recv.notify) {
-                    let state = state_cache[k];
-                    if(state != null) {
-                        state_cache[k].value = recv.notify[k];
-                    }
-                    else {
-                        state_cache[k] = { last_probed: recv.notify[k], value: recv.notify[k] };
-                    }
-
+                    state_cache[k] = recv.notify[k];
                 }
             }
         });
 
         ext.getSensorValue = function(prop) {
-            //console.log("ext.getSensorValue: %s %o", prop, callback);
-
             let key = proptable[prop];
-            if(key == undefined) return "";
-
             let state = state_cache[key];
             if(state == undefined) return "";
             
-            return state.value;
+            return state;
         };
 
         ext.getSensorBoolValue = function(prop) {
             return (ext.getSensorValue(prop) ? true : false);
         };
 
-        ext.onButtonChanged = function(prop) {
-            //console.log("ext.onButtonChanged: %s", prop);
-            let ws = ext.api.getConnection(null);
-            if(ws == null) return false;
-
+        ext.isButtonPressed = function(prop) {
             let key = proptable[prop];
-            if(key == undefined) return false;
-
             let state = state_cache[key];
-            if(state == undefined) return false;
-
-            let last_probed = state.last_probed;
-            let new_value = state.value;
-            state_cache[key].last_probed = state.value;
-
-            if(last_probed != new_value && new_value == true) {
+            if(state == true) {
                 return true;
             }
 
             return false;
         };
 
-        ext.onSensorValueChanged = function(prop, lessmore, threshold) {
-            //console.log("ext.onSensorValueChanged: %s %s %d", prop, lessmore, threshold);
-            let ws = ext.api.getConnection(null);
-            if(ws == null) return false;
-
+        ext.compareSensorValue = function(prop, lessmore, threshold) {
             let key = proptable[prop];
-            if(key == undefined) return false;
-
             let state = state_cache[key];
-            if(state == undefined) return false;
-
-            let last_probed = state.last_probed;
-            let new_value = state.value;
-            state_cache[prop].last_probed = state.value;
-
-            if(last_probed != new_value) {
-                if( (lessmore == '<' && last_probed >= threshold && new_value < threshold)  &&
-                    (lessmore == '>' && last_probed <= threshold && new_value > threshold) ) {
-                        return true;
-                }
+            if( (lessmore == '<') && (state < threshold)  ||
+                (lessmore == '>') && (state > threshold) ) {
+                return true;
             }
             
             return false;
