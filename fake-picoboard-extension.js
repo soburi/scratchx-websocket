@@ -34,8 +34,10 @@ new (function() {
         ],
         menus: {
             lessMore: ['<', '>'],
-            booleanSensor: ['button pressed', 'A connected', 'B connected', 'C connected', 'D connected'],
-            sensor: ['slider', 'light', 'sound', 'resistance-A', 'resistance-B', 'resistance-C', 'resistance-D'],
+            //booleanSensor: ['button pressed', 'A connected', 'B connected', 'C connected', 'D connected'],
+            //sensor: ['slider', 'light', 'sound', 'resistance-A', 'resistance-B', 'resistance-C', 'resistance-D'],
+            booleanSensor: ['button pressed'],
+            sensor: ['slider']
         },
     };
 
